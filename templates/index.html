@@ -1,0 +1,47 @@
+<!-- templates/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Upload CSV for Analysis</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+        body { font-family: sans-serif;  color: #333; font-family: 'Ubuntu'; }
+        .container {position: relative; background-color: #fff; border-radius: 8px; width:fit-content; height: fit-content; margin-left: auto; margin-right: auto; }
+        h1 { color: #333; text-align: center;}
+        form {text-align: center; }
+        input[type="file"] { margin-bottom: 10px; font-family: 'Ubuntu';}
+        input[type="submit"] { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-family: 'Ubuntu'; font-weight: 600; font-size: 15px; padding: 7px 16px; }
+        input[type="submit"]:hover { background-color: #0056b3; }
+        .error { color: red; margin-top: 10px; }
+        p {font-family: 'Roboto'; font-size: 13px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Performance</h1>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required accept=".csv">
+            <input type="submit" value="Upload">
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        <p>Must be csv file*</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flashes">
+                {% for message in messages %}
+                    <p class="error">{{ message }}</p>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+</body>
+</html>

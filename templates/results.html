@@ -1,0 +1,499 @@
+<!-- templates/results.html -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Analysis Results</title>
+    <style>
+        /* [All your existing CSS styles remain here...] */
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+        body {
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     margin: 0;
+     padding: 20px;
+     color: #333;
+     line-height: 1.6;
+}
+ .container {
+     background-color: #fff;
+     padding: 25px;
+     margin-bottom: 10px;
+     border-radius: 8px;
+     overflow-x:auto;
+     font-family: 'Ubuntu';
+}
+ h1, h2 {
+     color: #333333;
+     margin-top: 0;
+}
+ h1 {
+     font-size: 2em;
+     margin-bottom: 0.5em;
+}
+ h2 {
+     font-size: 1.5em;
+     margin-bottom: 0.75em;
+     border-bottom: 2px solid #e0e0e0;
+     padding-bottom: 0.3em;
+}
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-bottom: 20px;
+     font-size: 0.9em;
+     box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+     border-radius: 6px;
+     overflow: hidden;
+}
+ th, td {
+     padding: 12px 15px;
+     text-align: left;
+     border-bottom: 1px solid #e0e0e0;
+}
+ thead th {
+     background-color: #3f51b5;
+     color: #ffffff;
+     font-weight: 600;
+     text-transform: uppercase;
+     letter-spacing: 0.05em;
+}
+ tbody th {
+     background-color: #f8f9fa;
+     color: #495057;
+     font-weight: 500;
+     text-transform: none;
+     letter-spacing: normal;
+     border-right: 1px solid #dee2e6;
+}
+ tr:nth-of-type(even) {
+     background-color: #f8f9fa;
+}
+ tbody tr:nth-of-type(even) th {
+     background-color: #f8f9fa;
+}
+ tr:hover {
+     background-color: #e9ecef;
+}
+ tbody tr:hover th {
+     background-color: #e2e6ea;
+}
+ td:nth-last-child(2):is(:contains('Pass'), :contains('Review')) {
+     font-weight: bold;
+}
+ td:nth-last-child(2):contains('Pass') {
+     color: #198754;
+}
+ td:nth-last-child(2):contains('Review') {
+     color: #dc3545;
+}
+.study-guide-table td:not(:first-of-type):not(:empty) {
+     font-weight: bold;
+     color: #c0392b;
+     background-color: #fdecea !important;
+}
+ img {
+     max-width: 100%;
+     height: auto;
+     display: block;
+     margin: 25px auto;
+     border: none;
+     border-radius: 6px;
+}
+ .no-data {
+     font-style: italic;
+     color: #555;
+     background-color: #fff3cd;
+     padding: 10px 15px;
+     border-left: 4px solid #ffc107;
+     border-radius: 4px;
+}
+ a {
+     color: #007bff;
+     text-decoration: none;
+     font-weight: 500;
+}
+ a:hover {
+     text-decoration: underline;
+     color: #0056b3;
+}
+ .search-bar {
+     margin-bottom: 15px;
+     padding: 8px 10px;
+     border: 1px solid #ced4da;
+     border-radius: 4px;
+     width: 12%;
+     box-sizing: border-box;
+     font-family: 'Ubuntu';
+}
+ .btn-generate {
+     background-color:  #7c73d3;
+     color: white;
+     padding: 7px 10px;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     font-family: 'Ubuntu', sans-serif;
+     font-weight: 600;
+     font-size: 15px;
+     text-align: center;
+     text-decoration: none;
+     display: inline-block;
+}
+ .btn-generate:hover {
+     background-color: #0056b3;
+}
+/* --- New Modal Styles --- */
+ .modal {
+     display: none;
+     position: fixed;
+     z-index: 1000;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     overflow: auto;
+     background-color: rgba(0,0,0,0.5);
+}
+ .modal-content {
+     background-color: #fefefe;
+     margin: 15% auto;
+     padding: 20px;
+     border: 1px solid #888;
+     width: 80%;
+     max-width: 400px;
+     border-radius: 8px;
+     text-align: center;
+}
+ .close-button {
+     color: #aaa;
+     float: right;
+     font-size: 28px;
+     font-weight: bold;
+     cursor: pointer;
+}
+ .close-button:hover, .close-button:focus {
+     color: black;
+     text-decoration: none;
+}
+ .modal-content h3 {
+     margin-top: 0;
+}
+ .modal-content input[type="file"] {
+     margin: 15px 0;
+}
+ .modal-content .btn-create {
+     background-color: #007bff;
+     color: white;
+     padding: 7px 16px;
+     border: none;
+     border-radius: 4px;
+     cursor: pointer;
+     font-size: 15px;
+     font-weight: 600;
+}
+ .modal-content .btn-create:hover {
+     background-color: #0056b3;
+}
+ .modal-content .btn-create:disabled {
+     background-color: #cccccc;
+     cursor: not-allowed;
+}
+ #modal-status {
+     margin-top: 15px;
+     font-weight: bold;
+}
+
+input[type="file"] {
+    font-family: 'Ubuntu';
+    margin: 0;
+}
+
+#modal-status {
+  border: 2px solid #f3f3f3; /* Light grey */
+  border-top: 2px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sort-control { 
+    display: inline-block; 
+    margin-left: 10px; 
+    font-family: Roboto;
+}
+
+#predictionsSearch {
+    width: 215px;
+}
+/* --- MODIFICATION START: Styles for the new CED uploader --- */
+#cedUploaderContainer {
+    background-color: #eef2f7;
+    border: 2px dashed #a0b3c7;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    /* Flexbox properties for centering */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#cedStatus {
+    margin-top: 10px;
+    font-family: 'Roboto', sans-serif;
+    color: #333333;
+    font-weight: 500;
+    font-size: 13px;
+}
+/* --- MODIFICATION END --- */
+    </style>
+</head>
+<body>
+    <!-- MODIFICATION START: Add a primary CED uploader at the top -->
+    <div class="container">
+        <div id="cedUploaderContainer">
+            <h3 style="font-family: Ubuntu; margin-top: 0;">Upload Course and Exam Description (CED)</h3>
+            <p style="font-family: Roboto; font-size: 14px; color: #333; margin-top: 0;">This file will be used for all study guide generations on this page.</p>
+            <input type="file" id="mainCedInput" accept=".pdf" required>
+            <div id="cedStatus">No file selected.</div>
+        </div>
+    </div>
+    <!-- MODIFICATION END -->
+
+    <!-- Main content containers -->
+    {% if study_guides_html %}
+    <div class="container">
+        <h2>Personalized Study Guides (Areas for Review)</h2>
+        <p>Scores below 70% are highlighted. Blank cells mean the student scored 70% or above on that assessment.</p>
+        <input type="text" id="studyGuideSearch" class="search-bar" onkeyup="filterTable('studyGuideSearch', 'studyGuideTableContainer')" placeholder="Search by Student ID or Name...">
+        <div class="study-guide-table" id="studyGuideTableContainer">{{ study_guides_html | safe }}</div>
+    </div>
+    {% endif %}
+
+    {% if plot_b64 %}
+    <div class="container">
+        <h2>Distribution of Average Scores</h2>
+        <img src="data:image/png;base64,{{ plot_b64 }}" alt="Distribution of Average Scores">
+    </div>
+    {% endif %}
+
+    {% if predictions_html %}
+    <div class="container">
+        <h2>Average Scores and AP 3-5 Likelihood</h2>
+        <div>
+            <input type="text" id="predictionsSearch" class="search-bar" onkeyup="filterTable('predictionsSearch', 'predictionsTableContainer')" placeholder="Search by Student ID or Name...">
+            <div class="sort-control">
+                <input type="checkbox" id="sortByNameCheckbox" onchange="toggleSortByName()">
+                <label for="sortByNameCheckbox">Sort by Last Name</label>
+            </div>
+        </div>
+        <div id="predictionsTableContainer">{{ predictions_html | safe }}</div>
+    </div>
+    {% endif %}
+
+    <!-- MODIFICATION: Modal structure is simplified -->
+    <div id="generateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 style="font-family: Ubuntu; font-size: 32px; margin-bottom: 12px;">Generate Study Guide</h3>
+            <p style="font-family: Roboto; font-size: 13px; color: black; margin: 0;  ">Click "Create" to generate the guide for Student <b id="modalStudentIdDisplay"></b>.</p>
+            <form id="generateForm" style="width: fit-content; margin-left: auto; margin-right: auto; margin-top: 20px;">
+                <input type="hidden" id="modalStudentId" name="student_id">
+                <input type="hidden" id="modalCsvFilename" name="csv_filename" value="{{ csv_filename }}">
+                <!-- The file input is now removed from the form -->
+                <button type="submit" class="btn-create" style="font-family: Ubuntu;">Create</button>
+            </form>
+            
+            <div id="modal-status"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- MODIFICATION START: Global variable to hold the CED file ---
+        let cedFile = null;
+        // --- MODIFICATION END ---
+
+        // --- All existing JavaScript functions (filterTable, toggleSortByName) remain here ---
+        function filterTable(inputId, tableContainerId) {
+            const input = document.getElementById(inputId);
+            const filter = input.value.toUpperCase();
+            const tableContainer = document.getElementById(tableContainerId);
+            const table = tableContainer.querySelector('table');
+            if (!table) return;
+
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let rowVisible = false;
+                const cells = tr[i].cells; 
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+                            rowVisible = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = rowVisible ? "" : "none";
+            }
+        }
+
+        function toggleSortByName() {
+            const isChecked = document.getElementById('sortByNameCheckbox').checked;
+            const tableContainer = document.getElementById('predictionsTableContainer');
+            const table = tableContainer.querySelector('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            const sortedRows = rows.sort((a, b) => {
+                if (isChecked) {
+                    const nameA = a.cells[1].textContent.trim();
+                    const nameB = b.cells[1].textContent.trim();
+                    const lastNameA = nameA.split(' ').pop();
+                    const lastNameB = nameB.split(' ').pop();
+                    return lastNameA.localeCompare(lastNameB);
+                } else {
+                    const idA = parseInt(a.cells[0].textContent.trim(), 10);
+                    const idB = parseInt(b.cells[0].textContent.trim(), 10);
+                    return idA - idB;
+                }
+            });
+
+            sortedRows.forEach(row => tbody.appendChild(row));
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const studyGuidesContainer = document.getElementById('studyGuideTableContainer');
+            if (studyGuidesContainer) {
+                const table = studyGuidesContainer.querySelector('table');
+                if (table) table.id = 'studyGuideTableHtml';
+            }
+        
+            const predictionsContainer = document.getElementById('predictionsTableContainer');
+            if (predictionsContainer) {
+                const table = predictionsContainer.querySelector('table');
+                if (table) table.id = 'predictionsTableHtml';
+            }
+
+            // --- MODIFICATION START: Logic for the new main CED uploader ---
+            const mainCedInput = document.getElementById('mainCedInput');
+            const cedStatus = document.getElementById('cedStatus');
+            mainCedInput.addEventListener('change', function(event) {
+                if (event.target.files.length > 0) {
+                    cedFile = event.target.files[0];
+                    cedStatus.textContent = `File selected: ${cedFile.name}`;
+                    
+                } else {
+                    cedFile = null;
+                    cedStatus.textContent = 'No file selected.';
+                    cedStatus.style.color = '#555';
+                }
+            });
+            // --- MODIFICATION END ---
+
+            // --- Modal Logic (with modifications) ---
+            const modal = document.getElementById('generateModal');
+            const closeBtn = document.querySelector('.close-button');
+            const generateForm = document.getElementById('generateForm');
+            const modalStudentIdInput = document.getElementById('modalStudentId');
+            const modalStudentIdDisplay = document.getElementById('modalStudentIdDisplay'); // For showing the ID in the modal text
+            const modalStatus = document.getElementById('modal-status');
+            const createBtn = generateForm.querySelector('.btn-create');
+
+            document.querySelectorAll('.btn-generate').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const row = event.target.closest('tr');
+                    const studentId = row.querySelector('th').innerText;
+                    modalStudentIdInput.value = studentId;
+                    modalStudentIdDisplay.innerText = studentId; // Update the display
+                    modal.style.display = 'block';
+                });
+            });
+
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+                resetModalState();
+            };
+            window.onclick = (event) => {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    resetModalState();
+                }
+            };
+
+            function resetModalState() {
+                generateForm.reset();
+                modalStatus.style.display = 'none'; // Hide the spinner
+                modalStatus.textContent = '';
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create';
+            }
+
+            // --- MODIFICATION: Handle form submission to use the global cedFile variable ---
+            generateForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Check if the CED file has been selected first
+                if (!cedFile) {
+                    alert('Please upload the Course and Exam Description (CED) PDF at the top of the page first.');
+                    return;
+                }
+                
+                createBtn.disabled = true;
+                createBtn.textContent = 'Generating...';
+                modalStatus.style.display = 'block'; // Show the spinner
+
+                const formData = new FormData(this);
+                // Append the globally stored file to the form data
+                formData.append('ced_file', cedFile);
+
+                fetch("{{ url_for('generate_guide_route') }}", {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error || 'An unknown error occurred.') });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        modalStatus.style.display = 'none';
+                        
+                        const link = document.createElement('a');
+                        link.href = data.download_url;
+                        link.download = data.download_url.split('/').pop();
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+
+                        setTimeout(() => {
+                            modal.style.display = 'none';
+                            resetModalState();
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    modalStatus.style.display = 'none'; // Hide spinner on error
+                    alert(`Error: ${error.message}`); // Use a simple alert for the error
+                    resetModalState(); // Reset the button
+                });
+            });
+        });
+    </script>
+</body>
+</html>
