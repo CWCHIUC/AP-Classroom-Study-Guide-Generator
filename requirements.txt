@@ -1,6 +1,7 @@
-pandas==2.2.3
-Flask==3.1.0
-seaborn==0.13.2
-matplotlib==3.8.4
-fpdf2==2.8.3
-google.generativeai==0.8.5
+Flask
+pandas
+PyMuPDF
+google-generativeai
+python-dotenv
+fpdf2
+Werkzeug

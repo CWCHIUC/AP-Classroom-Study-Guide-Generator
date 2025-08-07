@@ -5,18 +5,20 @@ import fitz  # PyMuPDF
 import google.generativeai as genai
 from fpdf import FPDF
 import re
+import io
 
-def get_weak_topics(student_id, csv_path):
+def get_weak_topics_and_subject(student_id, csv_stream):
     """
-    Finds topics where a student scored below 70% and identifies the course subject.
+    Finds topics where a student scored below 70% and identifies the course subject from a CSV stream.
     Returns a tuple: (list_of_weak_topics, subject_string).
     """
     try:
-        df = pd.read_csv(csv_path)
+        csv_stream.seek(0)
+        df = pd.read_csv(csv_stream)
     
-        subject = "General Studies" # A sensible default
+        subject = "General Studies"
         if "Subject" in df.columns and not df["Subject"].empty:
-            subject = df["Subject"].iloc[0]
+            subject = df["Subject"].dropna().iloc[0] if not df["Subject"].dropna().empty else "General Studies"
 
         df_filtered = df[df["Assessment Name"].str.contains("Quiz|Assessment", case=False, na=False)].copy()
         df_filtered.loc[:, "Percent Correct"] = pd.to_numeric(
@@ -44,7 +46,8 @@ def extract_text_from_pdf(pdf_stream):
     return text
 
 def create_study_guide_text(weak_topics, ced_text, api_key, subject):
-    """Generates study guide content using the Gemini API."""
+    """Generates study guide content using the Gemini API. (This function's logic is unchanged)"""
+    # ... (The entire Gemini prompt and API call logic remains the same)
     if not api_key:
         return "Error: API key was not provided to the generation function."
   
@@ -103,27 +106,17 @@ def create_study_guide_text(weak_topics, ced_text, api_key, subject):
         return f"An error occurred while generating the study guide: {e}"
 
 def sanitize_for_fpdf(text):
-    """Replaces unsupported Unicode characters with ASCII equivalents for FPDF."""
+    # ... (This function is unchanged)
     replacements = {
-        '≠': '!=',
-        '≤': '<=',
-        '≥': '>=',
-        '→': '->',
-        '•': '*',
-        '’': "'",
-        '‘': "'",
-        '“': '"',
-        '”': '"',
-        '—': '--',
-        '…': '...'
+        '≠': '!=', '≤': '<=', '≥': '>=', '→': '->', '•': '*', '’': "'",
+        '‘': "'", '“': '"', '”': '"', '—': '--', '…': '...'
     }
     for uni_char, ascii_char in replacements.items():
         text = text.replace(uni_char, ascii_char)
-    
-    # Fallback: encode to latin-1 and replace any remaining unsupported characters with '?'
     return text.encode('latin-1', 'replace').decode('latin-1')
 
 class PDF(FPDF):
+    # ... (This class is unchanged)
     def header(self):
         self.set_font('Helvetica', 'B', 15)
         self.cell(0, 10, 'Personalized Study Guide', 0, 1, 'C')
@@ -135,13 +128,9 @@ class PDF(FPDF):
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
     def write_markdown_line(self, text, size=11):
-        """Parses and writes a single line of markdown-like text with bold support."""
         self.set_font('Helvetica', '', size)
-        # Split text by bold markdown '**'
         segments = re.split(r'(\*\*.*?\*\*)', text)
-        
         for segment in segments:
-            # Sanitize each segment before writing
             sanitized_segment = sanitize_for_fpdf(segment)
             if sanitized_segment.startswith('**') and sanitized_segment.endswith('**'):
                 self.set_font('Helvetica', 'B', size)
@@ -151,11 +140,13 @@ class PDF(FPDF):
                 self.write(5, sanitized_segment)
         self.ln()
 
-def create_pdf_from_text(text_content, output_path):
+def create_pdf_from_text(text_content):
+    """Creates a PDF from text content and returns it as a byte string."""
     pdf = PDF()
     pdf.add_page()
     
     lines = text_content.split('\n')
+    # ... (The PDF generation logic is unchanged)
     in_code_block = False
     code_block_text = []
 
@@ -163,7 +154,6 @@ def create_pdf_from_text(text_content, output_path):
         if line.strip().startswith('```'):
             in_code_block = not in_code_block
             if not in_code_block:
-                # End of code block, now render it
                 pdf.set_font('Courier', '', 10)
                 pdf.set_fill_color(240, 240, 240)
                 text_to_write = "\n".join(code_block_text)
@@ -198,4 +188,7 @@ def create_pdf_from_text(text_content, output_path):
         else:
             pdf.ln(3)
 
-    pdf.output(output_path)
+    # --- THE FIX IS HERE ---
+    # The modern fpdf2 `output()` method directly returns bytes by default.
+    # The redundant .encode() call has been removed.
+    return pdf.output()

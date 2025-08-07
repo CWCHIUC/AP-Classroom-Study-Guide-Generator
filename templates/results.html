@@ -236,14 +236,13 @@ input[type="file"] {
 #predictionsSearch {
     width: 215px;
 }
-/* --- MODIFICATION START: Styles for the new CED uploader --- */
+/* --- Styles for the new CED uploader --- */
 #cedUploaderContainer {
     background-color: #eef2f7;
     border: 2px dashed #a0b3c7;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    /* Flexbox properties for centering */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -255,20 +254,17 @@ input[type="file"] {
     font-weight: 500;
     font-size: 13px;
 }
-/* --- MODIFICATION END --- */
     </style>
 </head>
 <body>
-    <!-- MODIFICATION START: Add a primary CED uploader at the top -->
     <div class="container">
         <div id="cedUploaderContainer">
             <h3 style="font-family: Ubuntu; margin-top: 0;">Upload Course and Exam Description (CED)</h3>
-            <p style="font-family: Roboto; font-size: 14px; color: #333; margin-top: 0;">This file will be used for all study guide generations on this page.</p>
+            <p style="font-family: Roboto; font-size: 14px; color: #333; margin-top: 0;">This file is required to generate any study guide on this page.</p>
             <input type="file" id="mainCedInput" accept=".pdf" required>
             <div id="cedStatus">No file selected.</div>
         </div>
     </div>
-    <!-- MODIFICATION END -->
 
     <!-- Main content containers -->
     {% if study_guides_html %}
@@ -301,7 +297,6 @@ input[type="file"] {
     </div>
     {% endif %}
 
-    <!-- MODIFICATION: Modal structure is simplified -->
     <div id="generateModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -309,41 +304,31 @@ input[type="file"] {
             <p style="font-family: Roboto; font-size: 13px; color: black; margin: 0;  ">Click "Create" to generate the guide for Student <b id="modalStudentIdDisplay"></b>.</p>
             <form id="generateForm" style="width: fit-content; margin-left: auto; margin-right: auto; margin-top: 20px;">
                 <input type="hidden" id="modalStudentId" name="student_id">
+                <!-- The csv_filename is no longer needed by the backend, but we can keep it if you want -->
                 <input type="hidden" id="modalCsvFilename" name="csv_filename" value="{{ csv_filename }}">
-                <!-- The file input is now removed from the form -->
                 <button type="submit" class="btn-create" style="font-family: Ubuntu;">Create</button>
             </form>
-            
             <div id="modal-status"></div>
         </div>
     </div>
 
     <script>
-        // --- MODIFICATION START: Global variable to hold the CED file ---
         let cedFile = null;
-        // --- MODIFICATION END ---
 
-        // --- All existing JavaScript functions (filterTable, toggleSortByName) remain here ---
         function filterTable(inputId, tableContainerId) {
             const input = document.getElementById(inputId);
             const filter = input.value.toUpperCase();
             const tableContainer = document.getElementById(tableContainerId);
             const table = tableContainer.querySelector('table');
             if (!table) return;
-
             const tr = table.getElementsByTagName("tr");
-
             for (let i = 1; i < tr.length; i++) {
                 let rowVisible = false;
                 const cells = tr[i].cells; 
-                
                 for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
-                            rowVisible = true;
-                            break;
-                        }
+                    if (cells[j] && cells[j].textContent.toUpperCase().indexOf(filter) > -1) {
+                        rowVisible = true;
+                        break;
                     }
                 }
                 tr[i].style.display = rowVisible ? "" : "none";
@@ -356,7 +341,6 @@ input[type="file"] {
             const table = tableContainer.querySelector('table');
             const tbody = table.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
-
             const sortedRows = rows.sort((a, b) => {
                 if (isChecked) {
                     const nameA = a.cells[1].textContent.trim();
@@ -370,45 +354,27 @@ input[type="file"] {
                     return idA - idB;
                 }
             });
-
             sortedRows.forEach(row => tbody.appendChild(row));
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            const studyGuidesContainer = document.getElementById('studyGuideTableContainer');
-            if (studyGuidesContainer) {
-                const table = studyGuidesContainer.querySelector('table');
-                if (table) table.id = 'studyGuideTableHtml';
-            }
-        
-            const predictionsContainer = document.getElementById('predictionsTableContainer');
-            if (predictionsContainer) {
-                const table = predictionsContainer.querySelector('table');
-                if (table) table.id = 'predictionsTableHtml';
-            }
-
-            // --- MODIFICATION START: Logic for the new main CED uploader ---
             const mainCedInput = document.getElementById('mainCedInput');
             const cedStatus = document.getElementById('cedStatus');
             mainCedInput.addEventListener('change', function(event) {
                 if (event.target.files.length > 0) {
                     cedFile = event.target.files[0];
                     cedStatus.textContent = `File selected: ${cedFile.name}`;
-                    
                 } else {
                     cedFile = null;
                     cedStatus.textContent = 'No file selected.';
-                    cedStatus.style.color = '#555';
                 }
             });
-            // --- MODIFICATION END ---
 
-            // --- Modal Logic (with modifications) ---
             const modal = document.getElementById('generateModal');
             const closeBtn = document.querySelector('.close-button');
             const generateForm = document.getElementById('generateForm');
             const modalStudentIdInput = document.getElementById('modalStudentId');
-            const modalStudentIdDisplay = document.getElementById('modalStudentIdDisplay'); // For showing the ID in the modal text
+            const modalStudentIdDisplay = document.getElementById('modalStudentIdDisplay');
             const modalStatus = document.getElementById('modal-status');
             const createBtn = generateForm.querySelector('.btn-create');
 
@@ -417,35 +383,34 @@ input[type="file"] {
                     const row = event.target.closest('tr');
                     const studentId = row.querySelector('th').innerText;
                     modalStudentIdInput.value = studentId;
-                    modalStudentIdDisplay.innerText = studentId; // Update the display
+                    modalStudentIdDisplay.innerText = studentId;
                     modal.style.display = 'block';
                 });
             });
 
-            closeBtn.onclick = () => {
+            function closeModal() {
                 modal.style.display = 'none';
                 resetModalState();
-            };
+            }
+
+            closeBtn.onclick = closeModal;
             window.onclick = (event) => {
                 if (event.target == modal) {
-                    modal.style.display = 'none';
-                    resetModalState();
+                    closeModal();
                 }
             };
 
             function resetModalState() {
                 generateForm.reset();
-                modalStatus.style.display = 'none'; // Hide the spinner
-                modalStatus.textContent = '';
+                modalStatus.style.display = 'none';
                 createBtn.disabled = false;
                 createBtn.textContent = 'Create';
             }
 
-            // --- MODIFICATION: Handle form submission to use the global cedFile variable ---
+            // --- MODIFICATION: Handle form submission to download the file directly ---
             generateForm.addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                // Check if the CED file has been selected first
                 if (!cedFile) {
                     alert('Please upload the Course and Exam Description (CED) PDF at the top of the page first.');
                     return;
@@ -453,10 +418,9 @@ input[type="file"] {
                 
                 createBtn.disabled = true;
                 createBtn.textContent = 'Generating...';
-                modalStatus.style.display = 'block'; // Show the spinner
+                modalStatus.style.display = 'block';
 
                 const formData = new FormData(this);
-                // Append the globally stored file to the form data
                 formData.append('ced_file', cedFile);
 
                 fetch("{{ url_for('generate_guide_route') }}", {
@@ -464,33 +428,47 @@ input[type="file"] {
                     body: formData
                 })
                 .then(response => {
+                    // If response is not OK, it might be a JSON error from the server
                     if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.error || 'An unknown error occurred.') });
+                        // We attempt to parse it as JSON to get the error message
+                        return response.json().then(err => { 
+                            throw new Error(err.error || 'An unknown server error occurred.') 
+                        });
                     }
-                    return response.json();
+                    // If response is OK, we process it as a file download
+                    const disposition = response.headers.get('Content-Disposition');
+                    let filename = 'study_guide.pdf'; // A default filename
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        const matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) { 
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+                    // Return the file blob and its name for the next .then()
+                    return response.blob().then(blob => ({ blob, filename }));
                 })
-                .then(data => {
-                    if (data.success) {
-                        modalStatus.style.display = 'none';
-                        
-                        const link = document.createElement('a');
-                        link.href = data.download_url;
-                        link.download = data.download_url.split('/').pop();
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
+                .then(({ blob, filename }) => {
+                    // Create a temporary link to trigger the browser's download mechanism
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filename;
+                    
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up the temporary link and object URL
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
 
-                        setTimeout(() => {
-                            modal.style.display = 'none';
-                            resetModalState();
-                        }, 2000);
-                    }
+                    closeModal();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    modalStatus.style.display = 'none'; // Hide spinner on error
-                    alert(`Error: ${error.message}`); // Use a simple alert for the error
-                    resetModalState(); // Reset the button
+                    alert(`Error: ${error.message}`);
+                    resetModalState(); // Reset the modal so the user can try again
                 });
             });
         });
