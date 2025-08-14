@@ -200,9 +200,11 @@
      background-color: #cccccc;
      cursor: not-allowed;
 }
- #modal-status {
+ #modal-status-text {
      margin-top: 15px;
      font-weight: bold;
+     font-family: 'Roboto', sans-serif;
+     min-height: 20px;
 }
 
 input[type="file"] {
@@ -210,7 +212,7 @@ input[type="file"] {
     margin: 0;
 }
 
-#modal-status {
+#modal-spinner {
   border: 2px solid #f3f3f3; /* Light grey */
   border-top: 2px solid #3498db; /* Blue */
   border-radius: 50%;
@@ -220,6 +222,7 @@ input[type="file"] {
   display: none;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 10px;
 }
 
 @keyframes spin {
@@ -304,16 +307,16 @@ input[type="file"] {
             <p style="font-family: Roboto; font-size: 13px; color: black; margin: 0;  ">Click "Create" to generate the guide for Student <b id="modalStudentIdDisplay"></b>.</p>
             <form id="generateForm" style="width: fit-content; margin-left: auto; margin-right: auto; margin-top: 20px;">
                 <input type="hidden" id="modalStudentId" name="student_id">
-                <!-- The csv_filename is no longer needed by the backend, but we can keep it if you want -->
-                <input type="hidden" id="modalCsvFilename" name="csv_filename" value="{{ csv_filename }}">
                 <button type="submit" class="btn-create" style="font-family: Ubuntu;">Create</button>
             </form>
-            <div id="modal-status"></div>
+            <div id="modal-status-text"></div>
+            <div id="modal-spinner"></div>
         </div>
     </div>
 
     <script>
         let cedFile = null;
+        let pollingInterval = null; // To hold our interval timer
 
         function filterTable(inputId, tableContainerId) {
             const input = document.getElementById(inputId);
@@ -356,7 +359,7 @@ input[type="file"] {
             });
             sortedRows.forEach(row => tbody.appendChild(row));
         }
-        
+    
         document.addEventListener('DOMContentLoaded', function() {
             const mainCedInput = document.getElementById('mainCedInput');
             const cedStatus = document.getElementById('cedStatus');
@@ -375,7 +378,8 @@ input[type="file"] {
             const generateForm = document.getElementById('generateForm');
             const modalStudentIdInput = document.getElementById('modalStudentId');
             const modalStudentIdDisplay = document.getElementById('modalStudentIdDisplay');
-            const modalStatus = document.getElementById('modal-status');
+            const modalStatusText = document.getElementById('modal-status-text');
+            const modalSpinner = document.getElementById('modal-spinner');
             const createBtn = generateForm.querySelector('.btn-create');
 
             document.querySelectorAll('.btn-generate').forEach(button => {
@@ -384,12 +388,16 @@ input[type="file"] {
                     const studentId = row.querySelector('th').innerText;
                     modalStudentIdInput.value = studentId;
                     modalStudentIdDisplay.innerText = studentId;
+                    resetModalState(); // Reset modal before showing
                     modal.style.display = 'block';
                 });
             });
 
             function closeModal() {
                 modal.style.display = 'none';
+                if (pollingInterval) {
+                    clearInterval(pollingInterval); // Stop polling if modal is closed
+                }
                 resetModalState();
             }
 
@@ -401,13 +409,44 @@ input[type="file"] {
             };
 
             function resetModalState() {
-                generateForm.reset();
-                modalStatus.style.display = 'none';
+                generateForm.style.display = 'block';
+                modalStatusText.textContent = '';
+                modalStatusText.style.color = '#333';
+                modalSpinner.style.display = 'none';
                 createBtn.disabled = false;
-                createBtn.textContent = 'Create';
             }
 
-            // --- MODIFICATION: Handle form submission to download the file directly ---
+            function pollStatus(jobId) {
+                pollingInterval = setInterval(() => {
+                    fetch(`/status/${jobId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'processing') {
+                                modalStatusText.textContent = data.message || 'Processing...';
+                            } else if (data.status === 'complete') {
+                                clearInterval(pollingInterval);
+                                modalSpinner.style.display = 'none';
+                                modalStatusText.textContent = 'Guide complete! Your download will start automatically.';
+                                // Trigger download using the job ID
+                                window.location.href = `/download/${jobId}`;
+                                setTimeout(closeModal, 3000); // Close modal after a short delay
+                            } else if (data.status === 'error') {
+                                clearInterval(pollingInterval);
+                                modalSpinner.style.display = 'none';
+                                modalStatusText.style.color = 'red';
+                                modalStatusText.textContent = `Error: ${data.message}`;
+                            }
+                        })
+                        .catch(err => {
+                            clearInterval(pollingInterval);
+                            modalSpinner.style.display = 'none';
+                            modalStatusText.style.color = 'red';
+                            modalStatusText.textContent = 'Error checking status.';
+                            console.error(err);
+                        });
+                }, 3000); // Poll every 3 seconds
+            }
+
             generateForm.addEventListener('submit', function(event) {
                 event.preventDefault();
 
@@ -415,10 +454,11 @@ input[type="file"] {
                     alert('Please upload the Course and Exam Description (CED) PDF at the top of the page first.');
                     return;
                 }
-                
+            
                 createBtn.disabled = true;
-                createBtn.textContent = 'Generating...';
-                modalStatus.style.display = 'block';
+                generateForm.style.display = 'none'; // Hide form
+                modalSpinner.style.display = 'block';
+                modalStatusText.textContent = 'Starting job...';
 
                 const formData = new FormData(this);
                 formData.append('ced_file', cedFile);
@@ -428,47 +468,25 @@ input[type="file"] {
                     body: formData
                 })
                 .then(response => {
-                    // If response is not OK, it might be a JSON error from the server
                     if (!response.ok) {
-                        // We attempt to parse it as JSON to get the error message
-                        return response.json().then(err => { 
-                            throw new Error(err.error || 'An unknown server error occurred.') 
-                        });
+                        return response.json().then(err => { throw new Error(err.error || 'An unknown server error occurred.') });
                     }
-                    // If response is OK, we process it as a file download
-                    const disposition = response.headers.get('Content-Disposition');
-                    let filename = 'study_guide.pdf'; // A default filename
-                    if (disposition && disposition.indexOf('attachment') !== -1) {
-                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                        const matches = filenameRegex.exec(disposition);
-                        if (matches != null && matches[1]) { 
-                            filename = matches[1].replace(/['"]/g, '');
-                        }
-                    }
-                    // Return the file blob and its name for the next .then()
-                    return response.blob().then(blob => ({ blob, filename }));
+                    return response.json();
                 })
-                .then(({ blob, filename }) => {
-                    // Create a temporary link to trigger the browser's download mechanism
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = filename;
-                    
-                    document.body.appendChild(a);
-                    a.click();
-                    
-                    // Clean up the temporary link and object URL
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-
-                    closeModal();
+                .then(data => {
+                    if (data.job_id) {
+                        // Start polling for the job status
+                        pollStatus(data.job_id);
+                    } else {
+                        throw new Error('Did not receive a job ID from the server.');
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert(`Error: ${error.message}`);
-                    resetModalState(); // Reset the modal so the user can try again
+                    modalSpinner.style.display = 'none';
+                    modalStatusText.style.color = 'red';
+                    modalStatusText.textContent = `Error: ${error.message}`;
+                    createBtn.disabled = false; // Allow user to try again
                 });
             });
         });
