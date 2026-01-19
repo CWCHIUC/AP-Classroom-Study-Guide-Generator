@@ -104,7 +104,7 @@ def create_study_guide_text(weak_topics, ced_text, api_key, subject):
     )
 
     try:
-        model = genai.GenerativeModel('gemini-2.5-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:

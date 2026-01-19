@@ -3,331 +3,492 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Analysis Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Performance Analysis</title>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back_ios" />
+    
     <style>
-        /* [All your existing CSS styles remain here...] */
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+        :root {
+            --bg-body: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --primary-color: #0f172a; /* Slate 900 - Very dark blue/black */
+            --accent-color: #2563eb; /* Royal Blue for links/highlights */
+            --success-bg: #ecfdf5;
+            --success-text: #047857;
+            --danger-bg: #fef2f2;
+            --danger-text: #b91c1c;
+        }
+
         body {
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     margin: 0;
-     padding: 20px;
-     color: #333;
-     line-height: 1.6;
-}
- .container {
-     background-color: #fff;
-     padding: 25px;
-     margin-bottom: 10px;
-     border-radius: 8px;
-     overflow-x:auto;
-     font-family: 'Ubuntu';
-}
- h1, h2 {
-     color: #333333;
-     margin-top: 0;
-}
- h1 {
-     font-size: 2em;
-     margin-bottom: 0.5em;
-}
- h2 {
-     font-size: 1.5em;
-     margin-bottom: 0.75em;
-     border-bottom: 2px solid #e0e0e0;
-     padding-bottom: 0.3em;
-}
- table {
-     width: 100%;
-     border-collapse: collapse;
-     margin-bottom: 20px;
-     font-size: 0.9em;
-     box-shadow: 0 2px 3px rgba(0,0,0,0.05);
-     border-radius: 6px;
-     overflow: hidden;
-}
- th, td {
-     padding: 12px 15px;
-     text-align: left;
-     border-bottom: 1px solid #e0e0e0;
-}
- thead th {
-     background-color: #3f51b5;
-     color: #ffffff;
-     font-weight: 600;
-     text-transform: uppercase;
-     letter-spacing: 0.05em;
-}
- tbody th {
-     background-color: #f8f9fa;
-     color: #495057;
-     font-weight: 500;
-     text-transform: none;
-     letter-spacing: normal;
-     border-right: 1px solid #dee2e6;
-}
- tr:nth-of-type(even) {
-     background-color: #f8f9fa;
-}
- tbody tr:nth-of-type(even) th {
-     background-color: #f8f9fa;
-}
- tr:hover {
-     background-color: #e9ecef;
-}
- tbody tr:hover th {
-     background-color: #e2e6ea;
-}
- td:nth-last-child(2):is(:contains('Pass'), :contains('Review')) {
-     font-weight: bold;
-}
- td:nth-last-child(2):contains('Pass') {
-     color: #198754;
-}
- td:nth-last-child(2):contains('Review') {
-     color: #dc3545;
-}
-.study-guide-table td:not(:first-of-type):not(:empty) {
-     font-weight: bold;
-     color: #c0392b;
-     background-color: #fdecea !important;
-}
- img {
-     max-width: 100%;
-     height: auto;
-     display: block;
-     margin: 25px auto;
-     border: none;
-     border-radius: 6px;
-}
- .no-data {
-     font-style: italic;
-     color: #555;
-     background-color: #fff3cd;
-     padding: 10px 15px;
-     border-left: 4px solid #ffc107;
-     border-radius: 4px;
-}
- a {
-     color: #007bff;
-     text-decoration: none;
-     font-weight: 500;
-}
- a:hover {
-     text-decoration: underline;
-     color: #0056b3;
-}
- .search-bar {
-     margin-bottom: 15px;
-     padding: 8px 10px;
-     border: 1px solid #ced4da;
-     border-radius: 4px;
-     width: 12%;
-     box-sizing: border-box;
-     font-family: 'Ubuntu';
-}
- .btn-generate {
-     background-color:  #7c73d3;
-     color: white;
-     padding: 7px 10px;
-     border: none;
-     border-radius: 4px;
-     cursor: pointer;
-     font-family: 'Ubuntu', sans-serif;
-     font-weight: 600;
-     font-size: 15px;
-     text-align: center;
-     text-decoration: none;
-     display: inline-block;
-}
- .btn-generate:hover {
-     background-color: #0056b3;
-}
-/* --- New Modal Styles --- */
- .modal {
-     display: none;
-     position: fixed;
-     z-index: 1000;
-     left: 0;
-     top: 0;
-     width: 100%;
-     height: 100%;
-     overflow: auto;
-     background-color: rgba(0,0,0,0.5);
-}
- .modal-content {
-     background-color: #fefefe;
-     margin: 15% auto;
-     padding: 20px;
-     border: 1px solid #888;
-     width: 80%;
-     max-width: 400px;
-     border-radius: 8px;
-     text-align: center;
-}
- .close-button {
-     color: #aaa;
-     float: right;
-     font-size: 28px;
-     font-weight: bold;
-     cursor: pointer;
-}
- .close-button:hover, .close-button:focus {
-     color: black;
-     text-decoration: none;
-}
- .modal-content h3 {
-     margin-top: 0;
-}
- .modal-content input[type="file"] {
-     margin: 15px 0;
-}
- .modal-content .btn-create {
-     background-color: #007bff;
-     color: white;
-     padding: 7px 16px;
-     border: none;
-     border-radius: 4px;
-     cursor: pointer;
-     font-size: 15px;
-     font-weight: 600;
-}
- .modal-content .btn-create:hover {
-     background-color: #0056b3;
-}
- .modal-content .btn-create:disabled {
-     background-color: #cccccc;
-     cursor: not-allowed;
-}
- #modal-status-text {
-     margin-top: 15px;
-     font-weight: bold;
-     font-family: 'Roboto', sans-serif;
-     min-height: 20px;
-}
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
 
-input[type="file"] {
-    font-family: 'Ubuntu';
-    margin: 0;
-}
+        /* --- Top Navigation Bar --- */
+        .navbar {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-#modal-spinner {
-  border: 2px solid #f3f3f3; /* Light grey */
-  border-top: 2px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  display: none;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-}
+        .nav-link {
+            text-decoration: none;
+            color: black;
+            transition: text-decoration 0.2s;
+        }
+        
+        /* Back link: icon + text aligned nicely */
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            line-height: 1;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+        /* Material symbol alignment */
+        .nav-link .material-symbols-outlined {
+            font-size: 15px;          /* tweak if you want */
+            line-height: 1;
+            transform: none !important; /* overrides your inline scale */
+            position: relative;
+            text-decoration: none;
+        }
 
-.sort-control { 
-    display: inline-block; 
-    margin-left: 10px; 
-    font-family: Roboto;
-}
+        .nav-text:hover {
+            text-decoration: underline;
+        }
 
-#predictionsSearch {
-    width: 215px;
-}
-/* --- Styles for the new CED uploader --- */
-#cedUploaderContainer {
-    background-color: #eef2f7;
-    border: 2px dashed #a0b3c7;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#cedStatus {
-    margin-top: 10px;
-    font-family: 'Roboto', sans-serif;
-    color: #333333;
-    font-weight: 500;
-    font-size: 13px;
-}
+        .nav-link:visited {
+            text-decoration: none;
+        }
+
+        .brand {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-actions a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-actions a:hover { color: var(--text-main); }
+
+        /* --- Main Layout --- */
+        .main-container {
+            max-width: 1400px; /* Wider for data tables */
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* --- Section Headers --- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+            margin-top: 3rem;
+            padding-bottom: 0.5rem;
+            /* border-bottom: 1px solid var(--border-color); */
+        }
+        .section-header:first-of-type { margin-top: 0; }
+
+        .section-title h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        .section-title p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
+
+        /* --- Search Input --- */
+        .search-wrapper {
+            position: relative;
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .search-input {
+            padding: 8px 12px 8px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            width: 240px;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* --- CED Upload Box (Clean & Technical) --- */
+        .ced-box {
+            background-color: #f8fafc; /* Very light slate */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .ced-text h4 { margin: 0; font-size: 1rem; font-weight: 600; }
+        .ced-text p { margin: 4px 0 0 0; font-size: 0.875rem; color: var(--text-muted); }
+        
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* Custom file input styling */
+        input[type="file"] {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        input[type="file"]::file-selector-button {
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: white;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #f3f4f6;
+        }
+
+        /* --- Data Tables (The Star of the Show) --- */
+        .table-wrapper {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            overflow-x: auto;
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background-color: #f9fafb; }
+
+        /* Sticky First Column */
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 10;
+            border-right: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+        th:first-child { background: #f9fafb; z-index: 20; }
+        tbody tr:hover td:first-child { background-color: #f9fafb; }
+
+        /* --- Badges --- */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .status-pass { background-color: var(--success-bg); color: var(--success-text); }
+        .status-review { background-color: var(--danger-bg); color: var(--danger-text); }
+
+        /* --- Action Button (Minimalist) --- */
+        .btn-action {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-action:hover {
+            border-color: var(--text-muted);
+            background-color: #f9fafb;
+        }
+        .btn-action i { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* --- Plot Container --- */
+        .plot-container {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background: white;
+        }
+        .plot-container img { max-width: 100%; height: auto; }
+
+        /* --- Modal (Clean) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .modal-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+        
+        .close-modal { float: right; cursor: pointer; color: var(--text-muted); }
+        
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        /* Weakness Analysis: keep first 2 columns left, center the rest */
+        /* Weakness Analysis: underline grades in body cells only (not headers) */
+        #studyGuideTableContainer td:nth-child(n+3) {
+            text-align: center;
+            text-decoration: underline;
+            text-underline-offset: 2px; /* optional */
+        }
+
+        #studyGuideTableContainer th:nth-child(-n+2),
+        #studyGuideTableContainer td:nth-child(-n+2) {
+            text-align: left;
+        }
+
+        /* Performance Overview (predictions): keep first 2 columns left, center the rest */
+        #predictionsTableContainer th:nth-child(n+3),
+        #predictionsTableContainer td:nth-child(n+3) {
+            text-align: center;
+        }
+
+        #predictionsTableContainer th:nth-child(-n+2),
+        #predictionsTableContainer td:nth-child(-n+2) {
+            text-align: left;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="cedUploaderContainer">
-            <h3 style="font-family: Ubuntu; margin-top: 0;">Upload Course and Exam Description (CED)</h3>
-            <p style="font-family: Roboto; font-size: 14px; color: #333; margin-top: 0;">This file is required to generate any study guide on this page.</p>
-            <input type="file" id="mainCedInput" accept=".pdf" required>
-            <div id="cedStatus">No file selected.</div>
+
+    <!-- Navbar -->
+    <!-- <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-layer-group"></i>
+            <span>Student Performance Analyzer</span>
         </div>
-    </div>
+        <div class="nav-actions">
+            <a href="/"><i class="fas fa-upload"></i> Upload New File</a>
+        </div>
+    </nav> -->
 
-    <!-- Main content containers -->
-    {% if study_guides_html %}
-    <div class="container">
-        <h2>Personalized Study Guides (Areas for Review)</h2>
-        <p>Scores below 70% are highlighted. Blank cells mean the student scored 70% or above on that assessment.</p>
-        <input type="text" id="studyGuideSearch" class="search-bar" onkeyup="filterTable('studyGuideSearch', 'studyGuideTableContainer')" placeholder="Search by Student ID or Name...">
-        <div class="study-guide-table" id="studyGuideTableContainer">{{ study_guides_html | safe }}</div>
-    </div>
-    {% endif %}
+    <nav class="navbar" style="border: none; position: relative; padding: 25px 0px 0px 0px">
+        <a class="nav-link" href="/" style="margin-left: 40px;">
+            <span class="material-symbols-outlined nav-icon">arrow_back_ios</span>
+            <span class="nav-text">Upload New File</span>
+        </a>
+    </nav>
+    
+    <div class="main-container">
 
-    {% if plot_b64 %}
-    <div class="container">
-        <h2>Distribution of Average Scores</h2>
-        <img src="data:image/png;base64,{{ plot_b64 }}" alt="Distribution of Average Scores">
-    </div>
-    {% endif %}
-
-    {% if predictions_html %}
-    <div class="container">
-        <h2>Average Scores and AP 3-5 Likelihood</h2>
-        <div>
-            <input type="text" id="predictionsSearch" class="search-bar" onkeyup="filterTable('predictionsSearch', 'predictionsTableContainer')" placeholder="Search by Student ID or Name...">
-            <div class="sort-control">
-                <input type="checkbox" id="sortByNameCheckbox" onchange="toggleSortByName()">
-                <label for="sortByNameCheckbox">Sort by Last Name</label>
+        <!-- CED Upload Section -->
+        <div class="ced-box">
+            <div class="ced-text">
+                <h4>Course & Exam Description (CED)</h4>
+                <p>Required for generating AI study guides.</p>
+            </div>
+            <div class="file-input-wrapper">
+                <input type="file" id="mainCedInput" accept=".pdf">
+                <span id="cedStatus" style="font-size: 0.85rem; font-weight: 500; color: var(--success-text);"></span>
             </div>
         </div>
-        <div id="predictionsTableContainer">{{ predictions_html | safe }}</div>
-    </div>
-    {% endif %}
 
-    <div id="generateModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h3 style="font-family: Ubuntu; font-size: 32px; margin-bottom: 12px;">Generate Study Guide</h3>
-            <p style="font-family: Roboto; font-size: 13px; color: black; margin: 0;  ">Click "Create" to generate the guide for Student <b id="modalStudentIdDisplay"></b>.</p>
-            <form id="generateForm" style="width: fit-content; margin-left: auto; margin-right: auto; margin-top: 20px;">
-                <input type="hidden" id="modalStudentId" name="student_id">
-                <button type="submit" class="btn-create" style="font-family: Ubuntu;">Create</button>
-            </form>
-            <div id="modal-status-text"></div>
-            <div id="modal-spinner"></div>
+        <!-- Predictions Table -->
+        {% if predictions_html %}
+        <div class="section-header">
+            <div class="section-title">
+                <h2>Performance Overview</h2>
+                <p>Predicted outcomes based on assessment scores.</p>
+            </div>
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="predictionsSearch" class="search-input" onkeyup="filterTable('predictionsSearch', 'predictionsTableContainer')" placeholder="Filter students...">
+            </div>
+        </div>
+        
+        <div class="table-wrapper" id="predictionsTableContainer">
+            {{ predictions_html | safe }}
+        </div>
+        {% endif %}
+
+        <!-- Distribution Plot -->
+        {% if plot_b64 %}
+        <div class="section-header">
+            <div class="section-title">
+                <h2>Score Distribution</h2>
+            </div>
+        </div>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ plot_b64 }}" alt="Distribution Plot">
+        </div>
+        {% endif %}
+
+        <!-- Study Guides Table -->
+        {% if study_guides_html %}
+        <div class="section-header">
+            <div class="section-title">
+                <h2>Weakness Analysis</h2>
+                <p>Detailed breakdown of topics requiring review.</p>
+            </div>
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="studyGuideSearch" class="search-input" onkeyup="filterTable('studyGuideSearch', 'studyGuideTableContainer')" placeholder="Filter students...">
+            </div>
+        </div>
+        <div class="table-wrapper" id="studyGuideTableContainer">
+            {{ study_guides_html | safe }}
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- Modal -->
+    <div id="generateModal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="close-modal">&times;</span>
+            
+            <div id="modal-content-start">
+                <div class="modal-title">Generate Study Guide</div>
+                <p class="modal-desc">Create a PDF guide for Student <strong id="modalStudentIdDisplay"></strong>?</p>
+                
+                <form id="generateForm">
+                    <input type="hidden" id="modalStudentId" name="student_id">
+                    <button type="submit" class="btn-primary">Generate PDF</button>
+                </form>
+            </div>
+
+            <div id="modal-content-loading" class="hidden" style="text-align: center; padding: 1rem 0;">
+                <div class="spinner"></div>
+                <p id="modal-status-text" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">Processing...</p>
+            </div>
         </div>
     </div>
 
     <script>
-        let cedFile = null;
-        let pollingInterval = null; // To hold our interval timer
+        // --- 1. Clean Up Tables (Badges & Buttons) ---
+        document.addEventListener("DOMContentLoaded", function() {
+            // Style Status Cells
+            document.querySelectorAll('td').forEach(td => {
+                const text = td.textContent.trim();
+                if (text === 'Pass') {
+                    td.innerHTML = '<span class="status-badge status-pass">Pass</span>';
+                } else if (text === 'Review') {
+                    td.innerHTML = '<span class="status-badge status-review">Review</span>';
+                }
+            });
 
-        function filterTable(inputId, tableContainerId) {
+            // Style "Study Guide" Buttons (Assuming class .btn-generate from Python)
+            document.querySelectorAll('.btn-generate').forEach(btn => {
+                btn.className = 'btn-action'; // Reset class to our new one
+                btn.innerHTML = 'Create Guide';
+            });
+        });
+
+        // --- 2. Search Functionality ---
+        function filterTable(inputId, containerId) {
             const input = document.getElementById(inputId);
             const filter = input.value.toUpperCase();
-            const tableContainer = document.getElementById(tableContainerId);
-            const table = tableContainer.querySelector('table');
+            const container = document.getElementById(containerId);
+            const table = container.querySelector('table');
             if (!table) return;
             const tr = table.getElementsByTagName("tr");
-            for (let i = 1; i < tr.length; i++) {
+            
+            for (let i = 1; i < tr.length; i++) { 
                 let rowVisible = false;
-                const cells = tr[i].cells; 
+                const cells = tr[i].getElementsByTagName("td");
                 for (let j = 0; j < cells.length; j++) {
                     if (cells[j] && cells[j].textContent.toUpperCase().indexOf(filter) > -1) {
                         rowVisible = true;
@@ -338,158 +499,84 @@ input[type="file"] {
             }
         }
 
-        function toggleSortByName() {
-            const isChecked = document.getElementById('sortByNameCheckbox').checked;
-            const tableContainer = document.getElementById('predictionsTableContainer');
-            const table = tableContainer.querySelector('table');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            const sortedRows = rows.sort((a, b) => {
-                if (isChecked) {
-                    const nameA = a.cells[1].textContent.trim();
-                    const nameB = b.cells[1].textContent.trim();
-                    const lastNameA = nameA.split(' ').pop();
-                    const lastNameB = nameB.split(' ').pop();
-                    return lastNameA.localeCompare(lastNameB);
-                } else {
-                    const idA = parseInt(a.cells[0].textContent.trim(), 10);
-                    const idB = parseInt(b.cells[0].textContent.trim(), 10);
-                    return idA - idB;
-                }
-            });
-            sortedRows.forEach(row => tbody.appendChild(row));
-        }
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            const mainCedInput = document.getElementById('mainCedInput');
-            const cedStatus = document.getElementById('cedStatus');
-            mainCedInput.addEventListener('change', function(event) {
-                if (event.target.files.length > 0) {
-                    cedFile = event.target.files[0];
-                    cedStatus.textContent = `File selected: ${cedFile.name}`;
-                } else {
-                    cedFile = null;
-                    cedStatus.textContent = 'No file selected.';
-                }
-            });
+        // --- 3. Modal Logic ---
+        let cedFile = null;
+        let pollingInterval = null;
+        const modal = document.getElementById('generateModal');
+        const closeBtn = document.querySelector('.close-modal');
+        const generateForm = document.getElementById('generateForm');
+        const startView = document.getElementById('modal-content-start');
+        const loadingView = document.getElementById('modal-content-loading');
+        const statusText = document.getElementById('modal-status-text');
 
-            const modal = document.getElementById('generateModal');
-            const closeBtn = document.querySelector('.close-button');
-            const generateForm = document.getElementById('generateForm');
-            const modalStudentIdInput = document.getElementById('modalStudentId');
-            const modalStudentIdDisplay = document.getElementById('modalStudentIdDisplay');
-            const modalStatusText = document.getElementById('modal-status-text');
-            const modalSpinner = document.getElementById('modal-spinner');
-            const createBtn = generateForm.querySelector('.btn-create');
-
-            document.querySelectorAll('.btn-generate').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    const row = event.target.closest('tr');
-                    const studentId = row.querySelector('th').innerText;
-                    modalStudentIdInput.value = studentId;
-                    modalStudentIdDisplay.innerText = studentId;
-                    resetModalState(); // Reset modal before showing
-                    modal.style.display = 'block';
-                });
-            });
-
-            function closeModal() {
-                modal.style.display = 'none';
-                if (pollingInterval) {
-                    clearInterval(pollingInterval); // Stop polling if modal is closed
-                }
-                resetModalState();
+        document.getElementById('mainCedInput').addEventListener('change', (e) => {
+            if(e.target.files.length > 0) {
+                cedFile = e.target.files[0];
+                document.getElementById('cedStatus').textContent = "✓ Ready";
             }
+        });
 
-            closeBtn.onclick = closeModal;
-            window.onclick = (event) => {
-                if (event.target == modal) {
-                    closeModal();
-                }
-            };
-
-            function resetModalState() {
-                generateForm.style.display = 'block';
-                modalStatusText.textContent = '';
-                modalStatusText.style.color = '#333';
-                modalSpinner.style.display = 'none';
-                createBtn.disabled = false;
+        // Event Delegation for dynamic buttons
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-action');
+            if (btn) {
+                e.preventDefault();
+                const row = btn.closest('tr');
+                let studentId = row.querySelector('th') ? row.querySelector('th').innerText : row.cells[0].innerText;
+                
+                document.getElementById('modalStudentId').value = studentId;
+                document.getElementById('modalStudentIdDisplay').innerText = studentId;
+                
+                startView.classList.remove('hidden');
+                loadingView.classList.add('hidden');
+                modal.style.display = 'flex'; // Flex for centering
             }
+        });
 
-            function pollStatus(jobId) {
-                pollingInterval = setInterval(() => {
-                    fetch(`/status/${jobId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'processing') {
-                                modalStatusText.textContent = data.message || 'Processing...';
-                            } else if (data.status === 'complete') {
-                                clearInterval(pollingInterval);
-                                modalSpinner.style.display = 'none';
-                                modalStatusText.textContent = 'Guide complete! Your download will start automatically.';
-                                // Trigger download using the job ID
-                                window.location.href = `/download/${jobId}`;
-                                setTimeout(closeModal, 3000); // Close modal after a short delay
-                            } else if (data.status === 'error') {
-                                clearInterval(pollingInterval);
-                                modalSpinner.style.display = 'none';
-                                modalStatusText.style.color = 'red';
-                                modalStatusText.textContent = `Error: ${data.message}`;
-                            }
-                        })
-                        .catch(err => {
-                            clearInterval(pollingInterval);
-                            modalSpinner.style.display = 'none';
-                            modalStatusText.style.color = 'red';
-                            modalStatusText.textContent = 'Error checking status.';
-                            console.error(err);
-                        });
-                }, 3000); // Poll every 3 seconds
-            }
+        closeBtn.onclick = () => { modal.style.display = 'none'; clearInterval(pollingInterval); };
+        window.onclick = (e) => { if (e.target == modal) { modal.style.display = 'none'; clearInterval(pollingInterval); }};
 
-            generateForm.addEventListener('submit', function(event) {
-                event.preventDefault();
+        generateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!cedFile) { alert('Please upload the CED PDF first.'); return; }
 
-                if (!cedFile) {
-                    alert('Please upload the Course and Exam Description (CED) PDF at the top of the page first.');
-                    return;
-                }
-            
-                createBtn.disabled = true;
-                generateForm.style.display = 'none'; // Hide form
-                modalSpinner.style.display = 'block';
-                modalStatusText.textContent = 'Starting job...';
+            startView.classList.add('hidden');
+            loadingView.classList.remove('hidden');
+            statusText.textContent = "Initializing...";
 
-                const formData = new FormData(this);
-                formData.append('ced_file', cedFile);
+            const formData = new FormData(this);
+            formData.append('ced_file', cedFile);
 
-                fetch("{{ url_for('generate_guide_route') }}", {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.error || 'An unknown server error occurred.') });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.job_id) {
-                        // Start polling for the job status
-                        pollStatus(data.job_id);
-                    } else {
-                        throw new Error('Did not receive a job ID from the server.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    modalSpinner.style.display = 'none';
-                    modalStatusText.style.color = 'red';
-                    modalStatusText.textContent = `Error: ${error.message}`;
-                    createBtn.disabled = false; // Allow user to try again
-                });
+            fetch("{{ url_for('generate_guide_route') }}", { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                if (data.job_id) pollStatus(data.job_id);
+                else throw new Error(data.error || 'Unknown error');
+            })
+            .catch(err => {
+                statusText.style.color = 'var(--danger-text)';
+                statusText.textContent = err.message;
             });
         });
+
+        function pollStatus(jobId) {
+            pollingInterval = setInterval(() => {
+                fetch(`/status/${jobId}`).then(r => r.json()).then(data => {
+                    if (data.status === 'processing') {
+                        statusText.textContent = data.message;
+                    } else if (data.status === 'complete') {
+                        clearInterval(pollingInterval);
+                        statusText.textContent = "Done! Downloading...";
+                        window.location.href = `/download/${jobId}`;
+                        setTimeout(() => modal.style.display = 'none', 2000);
+                    } else if (data.status === 'error') {
+                        clearInterval(pollingInterval);
+                        statusText.style.color = 'var(--danger-text)';
+                        statusText.textContent = data.message;
+                    }
+                });
+            }, 3000);
+        }
     </script>
 </body>
 </html>
